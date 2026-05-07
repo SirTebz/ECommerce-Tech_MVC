@@ -1,0 +1,138 @@
+﻿@model SirTebz_Tech.Models.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="admin-page-header mb-4">
+    <h1 class="admin-page-title">Dashboard</h1>
+    <p class="admin-page-subtitle">Welcome back, @User.Identity?.Name?.Split('@')[0]! Here's what's happening.</p>
+</div>
+
+<!-- STAT CARDS -->
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card stat-card-blue">
+            <div class="stat-icon"><i class="bi bi-box-seam"></i></div>
+            <div class="stat-body">
+                <div class="stat-number">@Model.TotalProducts</div>
+                <div class="stat-label">Total Products</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card stat-card-green">
+            <div class="stat-icon"><i class="bi bi-bag-check"></i></div>
+            <div class="stat-body">
+                <div class="stat-number">@Model.TotalOrders</div>
+                <div class="stat-label">Total Orders</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card stat-card-purple">
+            <div class="stat-icon"><i class="bi bi-people"></i></div>
+            <div class="stat-body">
+                <div class="stat-number">@Model.TotalUsers</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card stat-card-orange">
+            <div class="stat-icon"><i class="bi bi-currency-dollar"></i></div>
+            <div class="stat-body">
+                <div class="stat-number">R @Model.TotalRevenue.ToString("N0")</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- RECENT PRODUCTS -->
+    <div class="col-lg-7">
+        <div class="admin-card">
+            <div class="admin-card-header d-flex justify-content-between align-items-center">
+                <h6 class="admin-card-title mb-0"><i class="bi bi-star me-2"></i>Featured Products</h6>
+                <a asp-area="Admin" asp-controller="Products" asp-action="Index" class="btn btn-admin-sm">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table admin-table">
+                    <thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        @foreach (var p in Model.RecentProducts)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img src="@(p.ImageUrl ?? "/images/placeholder.jpg")" width="40" height="40"
+                                             class="rounded" style="object-fit:cover"
+                                             onerror="this.src='/images/placeholder.jpg'" />
+                                        <div>
+                                            <div class="fw-semibold small">@p.Name</div>
+                                            <div class="text-muted" style="font-size:0.75rem">@p.BrandName</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>R @p.Price.ToString("N2")</td>
+                                <td>
+                                    <span class="badge @(p.Stock > 5 ? "bg-success" : p.Stock > 0 ? "bg-warning text-dark" : "bg-danger")">
+                                        @p.Stock
+                                    </span>
+                                </td>
+                                <td>
+                                    <a asp-area="Admin" asp-controller="Products" asp-action="Edit"
+                                       asp-route-id="@p.Id" class="btn btn-admin-xs">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK ACTIONS + RECENT ORDERS -->
+    <div class="col-lg-5">
+        <div class="admin-card mb-4">
+            <div class="admin-card-header">
+                <h6 class="admin-card-title mb-0"><i class="bi bi-lightning me-2"></i>Quick Actions</h6>
+            </div>
+            <div class="p-3 d-grid gap-2">
+                <a asp-area="Admin" asp-controller="Products" asp-action="Create" class="btn btn-admin-action">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Product
+                </a>
+                <a asp-area="Admin" asp-controller="Categories" asp-action="Create" class="btn btn-admin-action-outline">
+                    <i class="bi bi-folder-plus me-2"></i>Add Category
+                </a>
+                <a asp-area="Admin" asp-controller="Brands" asp-action="Create" class="btn btn-admin-action-outline">
+                    <i class="bi bi-tag me-2"></i>Add Brand
+                </a>
+            </div>
+        </div>
+
+        @if (Model.RecentOrders.Any())
+        {
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h6 class="admin-card-title mb-0"><i class="bi bi-bag me-2"></i>Recent Orders</h6>
+                </div>
+                <div class="p-0">
+                    @foreach (var order in Model.RecentOrders)
+                    {
+                        <div class="order-item d-flex justify-content-between align-items-center p-3 border-bottom">
+                            <div>
+                                <div class="small fw-semibold">#@order.Id — @order.UserEmail</div>
+                                <div class="text-muted" style="font-size:0.75rem">@order.CreatedAt.ToString("dd MMM yyyy")</div>
+                            </div>
+                            <div class="text-end">
+                                <div class="fw-semibold">R @order.TotalAmount.ToString("N2")</div>
+                                <span class="badge status-badge-@order.Status.ToLower()">@order.Status</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

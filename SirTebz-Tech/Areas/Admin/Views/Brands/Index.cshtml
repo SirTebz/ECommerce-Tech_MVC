@@ -1,0 +1,30 @@
+﻿@model IEnumerable<SirTebz_Tech.Models.Entities.Brand>
+@{
+    ViewData["Title"] = "Brands";
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="admin-page-title mb-0">Brands</h1>
+    <a asp-action="Create" class="btn btn-admin-action"><i class="bi bi-plus-circle me-2"></i>Add Brand</a>
+</div>
+<div class="admin-card">
+    <div class="table-responsive">
+        <table class="table admin-table">
+            <thead><tr><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+                @foreach (var brand in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@brand.Name</td>
+                        <td><span class="badge @(brand.IsActive ? "bg-success" : "bg-secondary")">@(brand.IsActive ? "Active" : "Inactive")</span></td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@brand.Id" class="btn btn-admin-xs btn-edit"><i class="bi bi-pencil"></i></a>
+                            <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirm('Delete @brand.Name?')">
+                                <input type="hidden" name="id" value="@brand.Id" />
+                                <button type="submit" class="btn btn-admin-xs btn-delete"><i class="bi bi-trash3"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div></div>

@@ -1,0 +1,42 @@
+﻿@model SirTebz_Tech.Models.ViewModels.CategoryCreateEditViewModel
+@{
+    ViewData["Title"] = "Edit Category";
+}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="admin-page-title mb-0">Add Category</h1>
+    <a asp-action="Index" class="btn btn-admin-back"><i class="bi bi-arrow-left me-1"></i>Back</a>
+</div>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="admin-card">
+            <div class="admin-card-body">
+                <form asp-action="Edit" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label admin-label">Name *</label>
+                        <input asp-for="Name" class="form-control admin-input" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label admin-label">Description</label>
+                        <textarea asp-for="Description" class="form-control admin-input" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="IconClass" class="form-label admin-label">Bootstrap Icon Class</label>
+                        <input asp-for="IconClass" class="form-control admin-input" placeholder="e.g. bi bi-laptop" />
+                        <div class="form-text">Use Bootstrap Icons class names from <a href="https://icons.getbootstrap.com" target="_blank">icons.getbootstrap.com</a></div>
+                    </div>
+                    <div class="mb-4 form-check">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Active</label>
+                    </div>
+                    <button type="submit" class="btn btn-admin-action w-100">Save Category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
