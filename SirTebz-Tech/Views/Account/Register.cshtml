@@ -1,0 +1,82 @@
+﻿@model SirTebz_Tech.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_Layout";
+}
+
+<div class="auth-page d-flex align-items-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="auth-card">
+                    <div class="auth-header text-center mb-4">
+                        <div class="auth-logo mb-2">
+                            <span class="logo-sir">Sir</span><span class="logo-tebz"> Tebz</span><span class="logo-dot">.</span><span class="logo-tech">Tech</span>
+                        </div>
+                        <h2 class="auth-title">Create your account</h2>
+                        <p class="auth-subtitle">Join Sir Tebz.Tech today</p>
+                    </div>
+
+                    <form asp-action="Register" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 mb-3 small"></div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col">
+                                <label asp-for="FirstName" class="form-label auth-label">First Name</label>
+                                <input asp-for="FirstName" class="form-control auth-input" placeholder="John" />
+                                <span asp-validation-for="FirstName" class="text-danger small"></span>
+                            </div>
+                            <div class="col">
+                                <label asp-for="LastName" class="form-label auth-label">Last Name</label>
+                                <input asp-for="LastName" class="form-control auth-input" placeholder="Doe" />
+                                <span asp-validation-for="LastName" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label auth-label">Email address</label>
+                            <div class="input-group">
+                                <span class="input-group-text auth-icon"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Email" class="form-control auth-input" placeholder="you@example.com" />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Password" class="form-label auth-label">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text auth-icon"><i class="bi bi-lock"></i></span>
+                                <input asp-for="Password" class="form-control auth-input" placeholder="Min 8 characters" />
+                                <button class="btn auth-icon" type="button" onclick="togglePwd(this)">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="ConfirmPassword" class="form-label auth-label">Confirm Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text auth-icon"><i class="bi bi-lock-fill"></i></span>
+                                <input asp-for="ConfirmPassword" class="form-control auth-input" placeholder="Repeat password" />
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-auth w-100 mb-3">
+                            <i class="bi bi-person-check me-2"></i>Create Account
+                        </button>
+
+                        <div class="auth-divider"><span>Already have an account?</span></div>
+                        <a asp-action="Login" class="btn btn-auth-outline w-100 mt-3">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

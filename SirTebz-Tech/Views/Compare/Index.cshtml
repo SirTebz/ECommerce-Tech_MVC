@@ -1,0 +1,148 @@
+﻿@model SirTebz_Tech.Models.ViewModels.CompareViewModel?
+@{
+    ViewData["Title"] = "Compare Products";
+}
+
+<div class="compare-page py-4">
+    <div class="container-xl">
+        <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb sttech-breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item active">Compare</li>
+            </ol>
+        </nav>
+
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h1 class="page-title"><i class="bi bi-bar-chart-steps me-2"></i>Compare Products</h1>
+            <div class="d-flex gap-2">
+                <a asp-controller="Products" asp-action="Index" class="btn btn-continue-shopping">
+                    <i class="bi bi-plus-circle me-1"></i>Add More Products
+                </a>
+                <button class="btn btn-clear-cart" onclick="clearCompare()">
+                    <i class="bi bi-trash me-1"></i>Clear All
+                </button>
+            </div>
+        </div>
+
+        @if (Model == null || !Model.Products.Any())
+        {
+            <div class="empty-state text-center py-5">
+                <i class="bi bi-bar-chart-steps empty-icon"></i>
+                <h3 class="mt-3">No products selected for comparison</h3>
+                <p class="text-muted mb-4">Browse products and click the <strong>Compare</strong> button to add them here. You can compare up to 4 products side-by-side.</p>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-hero-primary">
+                    <i class="bi bi-grid me-2"></i>Browse Products
+                </a>
+            </div>
+        }
+        else
+        {
+            var colWidth = 100 / (Model.Products.Count + 1);
+            <div class="compare-table-wrapper">
+                <table class="compare-table">
+                    <!-- HEADER ROW -->
+                    <thead>
+                        <tr class="compare-header-row">
+                            <th class="compare-label-col">Product</th>
+                            @foreach (var product in Model.Products)
+                            {
+                                <th class="compare-product-col">
+                                    <div class="compare-product-header">
+                                        <div class="compare-img-wrap">
+                                            <img src="@(product.ImageUrl ?? "/images/placeholder.jpg")"
+                                                 alt="@product.Name"
+                                                 onerror="this.src='/images/placeholder.jpg'"
+                                                 class="compare-product-img" />
+                                        </div>
+                                        <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id"
+                                           class="compare-product-name">@product.Name</a>
+                                        <div class="compare-brand">@product.BrandName</div>
+                                        <div class="compare-product-price">R @product.Price.ToString("N2")</div>
+                                        <div class="compare-product-actions">
+                                            @if (User.Identity?.IsAuthenticated == true)
+                                            {
+                                                <button class="btn btn-add-cart w-100 mb-1"
+                                                        onclick="addToCart(@product.Id, this)">
+                                                    <i class="bi bi-bag-plus me-1"></i>Add to Cart
+                                                </button>
+                                            }
+                                            <button class="btn btn-view-detail w-100"
+                                                    onclick="removeFromCompare(@product.Id)">
+                                                <i class="bi bi-x me-1"></i>Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                </th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- CATEGORY ROW -->
+                        <tr class="compare-spec-row">
+                            <td class="compare-spec-label">Category</td>
+                            @foreach (var product in Model.Products)
+                            {
+                                <td class="compare-spec-val">@product.CategoryName</td>
+                            }
+                        </tr>
+                        <!-- PRICE ROW -->
+                        <tr class="compare-spec-row compare-highlight-row">
+                            <td class="compare-spec-label">Price</td>
+                            @{
+                                var minPrice = Model.Products.Min(p => p.Price);
+                                var maxPrice = Model.Products.Max(p => p.Price);
+                            }
+                            @foreach (var product in Model.Products)
+                            {
+                                <td class="compare-spec-val @(product.Price == minPrice && Model.Products.Count > 1 ? "compare-best" : product.Price == maxPrice && Model.Products.Count > 1 ? "compare-worst" : "")">
+                                    R @product.Price.ToString("N2")
+                                    @if (product.Price == minPrice && Model.Products.Count > 1)
+                                    {
+                                        <span class="best-badge">Best Price</span>
+                                    }
+                                </td>
+                            }
+                        </tr>
+
+                        <!-- SPECS ROWS -->
+                        @foreach (var specKey in Model.AllSpecKeys)
+                        {
+                            <tr class="compare-spec-row">
+                                <td class="compare-spec-label">@specKey</td>
+                                @foreach (var product in Model.Products)
+                                {
+                                    var val = product.Specifications.TryGetValue(specKey, out var sv) ? sv : "—";
+                                    var allVals = Model.Products
+                                        .Where(p => p.Specifications.ContainsKey(specKey))
+                                        .Select(p => p.Specifications[specKey])
+                                        .Distinct().ToList();
+                                    var isDiff = allVals.Count > 1;
+                                    <td class="compare-spec-val @(isDiff ? "compare-diff" : "")">@val</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="compare-legend mt-3">
+                <span class="legend-item compare-best">■</span> Best value &nbsp;
+                <span class="legend-item compare-diff">■</span> Values differ between products
+            </p>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function removeFromCompare(productId) {
+            let ids = getCompareList().filter(id => id !== productId);
+            localStorage.setItem('compareList', JSON.stringify(ids));
+            if (ids.length === 0) {
+                window.location.href = '/Compare';
+            } else {
+                window.location.href = '/Compare?ids=' + ids.join(',');
+            }
+        }
+    </script>
+}

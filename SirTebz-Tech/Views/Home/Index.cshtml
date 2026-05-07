@@ -1,8 +1,187 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model List<SirTebz_Tech.Models.ViewModels.ProductCardViewModel>
+@{
+    ViewData["Title"] = "Home";
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <div class="container-xl">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <div class="hero-content">
+                    <span class="hero-eyebrow"><i class="bi bi-lightning-fill me-1"></i>New Arrivals 2025</span>
+                    <h1 class="hero-title">Tech That <span class="hero-accent">Powers</span> Your World</h1>
+                    <p class="hero-subtitle">Laptops, GPUs, Monitors, Accessories — everything you need from the best brands, at unbeatable prices.</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <a asp-controller="Products" asp-action="Index" class="btn btn-hero-primary">
+                            <i class="bi bi-grid-fill me-2"></i>Shop Now
+                        </a>
+                        <a asp-controller="Products" asp-action="Index" asp-route-categoryId="1" class="btn btn-hero-outline">
+                            <i class="bi bi-laptop me-2"></i>View Laptops
+                        </a>
+                    </div>
+                    <div class="hero-stats d-flex gap-4 mt-4">
+                        <div class="hero-stat"><span class="stat-num">500+</span><span class="stat-label">Products</span></div>
+                        <div class="hero-stat"><span class="stat-num">50+</span><span class="stat-label">Brands</span></div>
+                        <div class="hero-stat"><span class="stat-num">24/7</span><span class="stat-label">Support</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-visual">
+                    <div class="hero-glow"></div>
+                    <img src="/images/hero-laptop.png" alt="Featured Laptop" class="hero-device-img"
+                         onerror="this.style.display='none'" />
+                    <div class="hero-badge-1"><i class="bi bi-award-fill me-1"></i>Best Seller</div>
+                    <div class="hero-badge-2"><i class="bi bi-shield-check me-1"></i>2yr Warranty</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURE STRIPS -->
+<section class="features-strip">
+    <div class="container-xl">
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <div class="feature-item">
+                    <i class="bi bi-truck feature-icon"></i>
+                    <div><strong>Free Delivery</strong><small>On orders over R2,000</small></div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="feature-item">
+                    <i class="bi bi-shield-check feature-icon"></i>
+                    <div><strong>2-Year Warranty</strong><small>On all products</small></div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="feature-item">
+                    <i class="bi bi-arrow-counterclockwise feature-icon"></i>
+                    <div><strong>30-Day Returns</strong><small>Hassle-free process</small></div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="feature-item">
+                    <i class="bi bi-headset feature-icon"></i>
+                    <div><strong>24/7 Support</strong><small>Expert tech team</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SHOP BY CATEGORY -->
+<section class="section-pad">
+    <div class="container-xl">
+        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="section-title">Shop by Category</h2>
+                <p class="section-subtitle">Browse our complete tech catalog</p>
+            </div>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-see-all">View All <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+
+        <div class="row g-3">
+            @if (ViewBag.Categories != null)
+            {
+                int catIndex = 0;
+                foreach (var cat in ViewBag.Categories as IEnumerable<SirTebz_Tech.Models.Entities.Category> ?? Enumerable.Empty<SirTebz_Tech.Models.Entities.Category>())
+                {
+                    <div class="col-6 col-md-3 col-lg-2">
+                        <a asp-controller="Products" asp-action="Index" asp-route-categoryId="@cat.Id" class="category-card">
+                            <div class="cat-icon-wrap">
+                                <i class="@(cat.IconClass ?? "bi bi-grid") cat-icon"></i>
+                            </div>
+                            <span class="cat-name">@cat.Name</span>
+                        </a>
+                    </div>
+                    catIndex++;
+                }
+            }
+        </div>
+    </div>
+</section>
+
+<!-- PROMO BANNER GRID -->
+<section class="promo-grid-section">
+    <div class="container-xl">
+        <div class="row g-3">
+            <div class="col-lg-6">
+                <div class="promo-card promo-card-blue">
+                    <div class="promo-content">
+                        <span class="promo-tag">HOT DEALS</span>
+                        <h3>Laptop <br />Deals</h3>
+                        <a asp-controller="Products" asp-action="Index" asp-route-categoryId="1" class="btn btn-promo">
+                            EXPLORE <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    <div class="promo-visual"><i class="bi bi-laptop promo-icon"></i></div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="promo-card promo-card-red">
+                    <div class="promo-content">
+                        <span class="promo-tag">TRENDING</span>
+                        <h4>Graphics Cards</h4>
+                        <a asp-controller="Products" asp-action="Index" asp-route-categoryId="3" class="btn btn-promo-sm">
+                            SHOP NOW <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                    <div class="promo-visual"><i class="bi bi-gpu-card promo-icon-sm"></i></div>
+                </div>
+            </div>
+            <div class="col-lg-3 d-flex flex-column gap-3">
+                <div class="promo-card promo-card-purple flex-grow-1">
+                    <div class="promo-content">
+                        <span class="promo-tag">NEW</span>
+                        <h5>Gaming Monitors</h5>
+                        <a asp-controller="Products" asp-action="Index" asp-route-categoryId="4" class="btn btn-promo-xs">VIEW</a>
+                    </div>
+                </div>
+                <div class="promo-card promo-card-green flex-grow-1">
+                    <div class="promo-content">
+                        <span class="promo-tag">SALE</span>
+                        <h5>Accessories</h5>
+                        <a asp-controller="Products" asp-action="Index" asp-route-categoryId="5" class="btn btn-promo-xs">VIEW</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section-pad">
+    <div class="container-xl">
+        <div class="section-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="section-title">Featured Products</h2>
+                <p class="section-subtitle">Handpicked for performance & value</p>
+            </div>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-see-all">View All <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+
+        <div class="row g-3 g-md-4">
+            @foreach (var product in Model)
+            {
+                <div class="col-6 col-md-4 col-lg-3">
+                    @await Html.PartialAsync("_ProductCard", product)
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-section">
+    <div class="container-xl text-center">
+        <h2 class="cta-title">Can't Decide? Compare Products Side-by-Side</h2>
+        <p class="cta-subtitle">Our powerful comparison tool lets you see specs, prices, and features all at once.</p>
+        <a asp-controller="Compare" asp-action="Index" class="btn btn-cta">
+            <i class="bi bi-bar-chart-steps me-2"></i>Try Product Comparison
+        </a>
+    </div>
+</section>

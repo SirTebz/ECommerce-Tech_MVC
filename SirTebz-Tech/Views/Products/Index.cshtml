@@ -1,0 +1,214 @@
+﻿@model SirTebz_Tech.Models.ViewModels.ProductListViewModel
+@{
+    ViewData["Title"] = "Products";
+    ViewData["SearchTerm"] = Model.SearchTerm;
+}
+
+<div class="products-page py-4">
+    <div class="container-xl">
+
+        <!-- PAGE HEADER -->
+        <div class="page-header mb-4">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb sttech-breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item active">Products</li>
+                </ol>
+            </nav>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <h1 class="page-title">
+                    @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                    {
+                        <span>Search: <em>@Model.SearchTerm</em></span>
+                    }
+                    else if (Model.Filters.CategoryId.HasValue)
+                    {
+                        var catName = Model.Filters.Categories.FirstOrDefault(c => c.Id == Model.Filters.CategoryId)?.Name;
+                        @catName
+                    }
+                    else
+                    {
+                        <span>All Products</span>
+                    }
+                </h1>
+                <span class="results-count">@Model.TotalCount products found</span>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- FILTER SIDEBAR -->
+            <div class="col-lg-3">
+                <div class="filter-panel">
+                    <div class="filter-panel-header d-flex justify-content-between align-items-center">
+                        <h6 class="filter-title mb-0"><i class="bi bi-funnel me-2"></i>Filters</h6>
+                        <a asp-action="Index" class="btn-clear-filters">Clear All</a>
+                    </div>
+
+                    <form id="filterForm" method="get" asp-action="Index">
+                        <!-- SEARCH -->
+                        <div class="filter-section">
+                            <label class="filter-label">Search</label>
+                            <input type="text" name="searchTerm" class="form-control filter-input"
+                                   placeholder="Search..." value="@Model.SearchTerm" />
+                        </div>
+
+                        <!-- CATEGORY -->
+                        <div class="filter-section">
+                            <label class="filter-label">Category</label>
+                            @foreach (var cat in Model.Filters.Categories)
+                            {
+                                <div class="filter-check">
+                                    <input class="form-check-input filter-checkbox" type="radio" name="categoryId"
+                                           id="cat_@cat.Id" value="@cat.Id"
+                                    @(Model.Filters.CategoryId == cat.Id ? "checked" : "")
+                                           onchange="this.form.submit()" />
+                                    <label class="form-check-label" for="cat_@cat.Id">
+                                        @cat.Name <span class="filter-count">(@cat.ProductCount)</span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- BRAND -->
+                        <div class="filter-section">
+                            <label class="filter-label">Brand</label>
+                            @foreach (var brand in Model.Filters.Brands)
+                            {
+                                <div class="filter-check">
+                                    <input class="form-check-input filter-checkbox" type="radio" name="brandId"
+                                           id="brand_@brand.Id" value="@brand.Id"
+                                    @(Model.Filters.BrandId == brand.Id ? "checked" : "")
+                                           onchange="this.form.submit()" />
+                                    <label class="form-check-label" for="brand_@brand.Id">@brand.Name</label>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- PRICE RANGE -->
+                        <div class="filter-section">
+                            <label class="filter-label">Price Range (ZAR)</label>
+                            <div class="d-flex gap-2 align-items-center">
+                                <input type="number" name="minPrice" class="form-control filter-input-sm"
+                                       placeholder="Min" value="@Model.Filters.MinPrice" />
+                                <span class="text-muted">–</span>
+                                <input type="number" name="maxPrice" class="form-control filter-input-sm"
+                                       placeholder="Max" value="@Model.Filters.MaxPrice" />
+                            </div>
+                        </div>
+
+                        <!-- RAM -->
+                        @if (Model.Filters.RamOptions.Any())
+                        {
+                            <div class="filter-section">
+                                <label class="filter-label">RAM</label>
+                                <select name="ram" class="form-select filter-select" onchange="this.form.submit()">
+                                    <option value="">Any</option>
+                                    @foreach (var r in Model.Filters.RamOptions)
+                                    {
+                                        <option value="@r" selected="@(Model.Filters.Ram == r)">@r</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+
+                        <!-- STORAGE -->
+                        @if (Model.Filters.StorageOptions.Any())
+                        {
+                            <div class="filter-section">
+                                <label class="filter-label">Storage</label>
+                                <select name="storage" class="form-select filter-select" onchange="this.form.submit()">
+                                    <option value="">Any</option>
+                                    @foreach (var s in Model.Filters.StorageOptions)
+                                    {
+                                        <option value="@s" selected="@(Model.Filters.Storage == s)">@s</option>
+                                    }
+                                </select>
+                            </div>
+                        }
+
+                        <button type="submit" class="btn btn-apply-filter w-100 mt-2">
+                            <i class="bi bi-search me-1"></i>Apply Filters
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- PRODUCTS GRID -->
+            <div class="col-lg-9">
+                <!-- SORT BAR -->
+                <div class="sort-bar d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-view-grid active" id="gridViewBtn" onclick="setView('grid')">
+                            <i class="bi bi-grid-3x3-gap-fill"></i>
+                        </button>
+                        <button class="btn btn-view-list" id="listViewBtn" onclick="setView('list')">
+                            <i class="bi bi-list-ul"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <label class="sort-label">Sort by:</label>
+                        <select class="form-select sort-select" id="sortSelect"
+                                onchange="updateSort(this.value)">
+                            <option value="" selected="@(Model.Filters.SortBy == null)">Featured</option>
+                            <option value="newest" selected="@(Model.Filters.SortBy == "newest")">Newest First</option>
+                            <option value="price_asc" selected="@(Model.Filters.SortBy == "price_asc")">Price: Low to High</option>
+                            <option value="price_desc" selected="@(Model.Filters.SortBy == "price_desc")">Price: High to Low</option>
+                            <option value="name_asc" selected="@(Model.Filters.SortBy == "name_asc")">Name: A–Z</option>
+                        </select>
+                    </div>
+                </div>
+
+                @if (!Model.Products.Any())
+                {
+                    <div class="empty-state text-center py-5">
+                        <i class="bi bi-search empty-icon"></i>
+                        <h4>No products found</h4>
+                        <p class="text-muted">Try adjusting your filters or search term.</p>
+                        <a asp-action="Index" class="btn btn-hero-primary mt-2">Clear Filters</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="row g-3 g-md-4" id="productsGrid">
+                        @foreach (var product in Model.Products)
+                        {
+                            <div class="col-6 col-md-4 product-grid-item">
+                                @await Html.PartialAsync("_ProductCard", product)
+                            </div>
+                        }
+                    </div>
+                    @await Html.PartialAsync("_Pagination", Model.Pagination)
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updateSort(val) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('sortBy', val);
+            url.searchParams.set('page', '1');
+            window.location.href = url.toString();
+        }
+        function setView(type) {
+            const grid = document.getElementById('productsGrid');
+            if (!grid) return;
+            if (type === 'list') {
+                grid.classList.remove('row-cols-2','row-cols-md-3');
+                grid.querySelectorAll('.product-grid-item').forEach(el => {
+                    el.className = 'col-12 product-grid-item';
+                });
+                document.getElementById('listViewBtn').classList.add('active');
+                document.getElementById('gridViewBtn').classList.remove('active');
+            } else {
+                grid.querySelectorAll('.product-grid-item').forEach(el => {
+                    el.className = 'col-6 col-md-4 product-grid-item';
+                });
+                document.getElementById('gridViewBtn').classList.add('active');
+                document.getElementById('listViewBtn').classList.remove('active');
+            }
+        }
+    </script>
+}
