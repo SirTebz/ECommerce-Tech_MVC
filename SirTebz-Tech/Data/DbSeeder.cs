@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SirTebzTech.Models.Entities;
+using SirTebz_Tech.Models.Entities;
 
-namespace SirTebzTech.Data;
+namespace SirTebz_Tech.Data;
 
 public static class DbSeeder
 {

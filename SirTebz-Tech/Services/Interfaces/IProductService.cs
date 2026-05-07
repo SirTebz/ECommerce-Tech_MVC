@@ -1,6 +1,6 @@
-﻿using SirTebzTech.Models.ViewModels;
+﻿using SirTebz_Tech.Models.ViewModels;
 
-namespace SirTebzTech.Services.Interfaces;
+namespace SirTebz_Tech.Services.Interfaces;
 
 public interface IProductService
 {

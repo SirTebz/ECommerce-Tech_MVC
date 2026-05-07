@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SirTebzTech.Models.Entities;
+using SirTebz_Tech.Models.Entities;
 
-namespace SirTebzTech.Data;
+namespace SirTebz_Tech.Data;
 
 public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 {

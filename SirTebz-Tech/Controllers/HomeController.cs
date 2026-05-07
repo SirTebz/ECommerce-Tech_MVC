@@ -1,25 +1,29 @@
 using Microsoft.AspNetCore.Mvc;
-using SirTebz_Tech.Models;
-using System.Diagnostics;
+using SirTebz_Tech.Services.Interfaces;
 
-namespace SirTebz_Tech.Controllers
+namespace SirTebz_Tech.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    private readonly IProductService _productService;
+    private readonly ICategoryService _categoryService;
+
+    public HomeController(IProductService productService, ICategoryService categoryService)
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        _productService = productService;
+        _categoryService = categoryService;
     }
+
+    public async Task<IActionResult> Index()
+    {
+        var featured = await _productService.GetFeaturedProductsAsync(8);
+        var categories = await _categoryService.GetAllAsync();
+        ViewBag.Categories = categories;
+        return View(featured);
+    }
+
+    public IActionResult Privacy() => View();
+
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error() => View();
 }

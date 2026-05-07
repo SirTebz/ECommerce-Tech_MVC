@@ -1,7 +1,7 @@
-﻿using SirTebzTech.Models.Entities;
-using SirTebzTech.Models.ViewModels;
+﻿using SirTebz_Tech.Models.Entities;
+using SirTebz_Tech.Models.ViewModels;
 
-namespace SirTebzTech.Services.Interfaces;
+namespace SirTebz_Tech.Services.Interfaces;
 
 public interface ICategoryService
 {

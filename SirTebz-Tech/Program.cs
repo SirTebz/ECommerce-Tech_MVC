@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SirTebzTech.Data;
-using SirTebzTech.Models.Entities;
-using SirTebzTech.Repositories;
-using SirTebzTech.Repositories.Interfaces;
-using SirTebzTech.Services;
-using SirTebzTech.Services.Interfaces;
+using SirTebz_Tech.Data;
+using SirTebz_Tech.Models.Entities;
+using SirTebz_Tech.Repositories;
+using SirTebz_Tech.Repositories.Interfaces;
+using SirTebz_Tech.Services;
+using SirTebz_Tech.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

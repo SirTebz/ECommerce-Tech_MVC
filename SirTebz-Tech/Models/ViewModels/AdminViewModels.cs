@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SirTebzTech.Models.ViewModels;
+namespace SirTebz_Tech.Models.ViewModels;
 
 public class AdminDashboardViewModel
 {

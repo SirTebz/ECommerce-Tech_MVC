@@ -1,6 +1,6 @@
-﻿using SirTebzTech.Models.Entities;
+﻿using SirTebz_Tech.Models.Entities;
 
-namespace SirTebzTech.Repositories.Interfaces;
+namespace SirTebz_Tech.Repositories.Interfaces;
 
 public interface IOrderRepository
 {

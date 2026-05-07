@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using SirTebzTech.Models.Entities;
-using SirTebzTech.Models.ViewModels;
-using SirTebzTech.Repositories.Interfaces;
-using SirTebzTech.Services.Interfaces;
+using SirTebz_Tech.Models.Entities;
+using SirTebz_Tech.Models.ViewModels;
+using SirTebz_Tech.Repositories.Interfaces;
+using SirTebz_Tech.Services.Interfaces;
 
-namespace SirTebzTech.Services;
+namespace SirTebz_Tech.Services;
 
 public class ProductService : IProductService
 {

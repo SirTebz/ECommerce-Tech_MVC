@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SirTebzTech.Data;
-using SirTebzTech.Models.Entities;
-using SirTebzTech.Repositories.Interfaces;
+using SirTebz_Tech.Data;
+using SirTebz_Tech.Models.Entities;
+using SirTebz_Tech.Repositories.Interfaces;
 
-namespace SirTebzTech.Repositories;
+namespace SirTebz_Tech.Repositories;
 
 public class ProductRepository : IProductRepository
 {

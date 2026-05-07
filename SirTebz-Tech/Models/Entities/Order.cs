@@ -1,6 +1,6 @@
-﻿using SirTebzTech.Models.Entities;
+﻿using SirTebz_Tech.Models.Entities;
 
-namespace SirTebzTech.Models.Entities;
+namespace SirTebz_Tech.Models.Entities;
 
 public class Order
 {
